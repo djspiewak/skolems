@@ -4,7 +4,7 @@ This library simply contains a few different encodings of universal and existent
 
 ```haskell
 type Uni f g = forall a . f a -> g a
-type Exi b = exists a . (b, b -> a)
+type Exi a = exists b . (b, b -> a)
 ```
 
 Scala isn't quite so simple. Unfortunately, Scala has *several* encodings of universal and existential types, all of which represent different tradeoffs, and using any of them effectively usually necessitates some understanding of how the compiler works. There's... not a lot that can be done to rectify that situation, but at least we can throw all the encoding machinery into one place so we don't have to keep copy/pasting it into every project ever.
