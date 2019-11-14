@@ -1,8 +1,7 @@
 sudo: false
 language: scala
 
-jdk:
-  - openjdk8
+jdk: openjdk8
 
 branches:
   except:
@@ -10,6 +9,7 @@ branches:
 
 scala:
   - 2.13.1
+  - 2.12.10
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION ci
