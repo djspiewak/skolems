@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package object skolems {
-  type ∀[F[_]] = Forall[F]
-  type ∃[F[_]] = Exists[F]
+package skolems
 
-  type Tau
-  type τ = Tau
+trait Forall[F[_]] {
+  def apply[A]: F[A]
 }

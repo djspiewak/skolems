@@ -14,10 +14,22 @@
  * limitations under the License.
  */
 
-package object skolems {
-  type ∀[F[_]] = Forall[F]
-  type ∃[F[_]] = Exists[F]
+package skolems
 
-  type Tau
-  type τ = Tau
+trait Exists[F[_]] {
+  type A
+  def apply(): F[A]
+}
+
+object Exists {
+  def apply[F[_]]: PartiallyApplied[F] =
+    new PartiallyApplied[F]
+
+  final class PartiallyApplied[F[_]] {
+    def apply[A0](fa: F[A0]): Exists[F] =
+      new Exists[F] {
+        type A = A0
+        def apply() = fa
+      }
+  }
 }
