@@ -20,4 +20,7 @@ package object skolems {
 
   type Tau
   type τ = Tau
+
+  type Not[A] = A => Nothing
+  type ¬[A] = Not[A]
 }
