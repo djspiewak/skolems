@@ -26,4 +26,14 @@ package object skolems {
 
   type Not[A] = A => Nothing
   type ¬[A] = Not[A]
+
+  /**
+   * Note that this is part of the implicit scope when the compiler attempts to
+   * resolve something like `implicitly[Foo[τ]]`, because the fully-expanded version
+   * of that expression is `implicitly[Foo[skolems.Tau]]`, and thus `skolems` is part
+   * of the type, and its companion is itself.
+   *
+   * This trick will break in Dotty.
+   */
+  implicit def forallToTau[F[_]](implicit F: Forall[F]): F[τ] = F[τ]
 }
