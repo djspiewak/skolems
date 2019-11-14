@@ -18,7 +18,7 @@ package skolems
 
 import scala.util.control.NoStackTrace
 
-trait Forall[F[_]] {
+trait Forall[+F[_]] {
   def apply[A]: F[A]
 }
 

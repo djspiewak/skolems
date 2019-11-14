@@ -16,7 +16,7 @@
 
 package skolems
 
-trait Exists[F[_]] {
+trait Exists[+F[_]] {
   type A
   def apply(): F[A]
 }
