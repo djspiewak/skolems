@@ -43,4 +43,7 @@ object Forall {
       }
     }
   }
+
+  implicit def materialize[F[_]](implicit F: F[τ]): Forall[F] =
+    Forall[F](_(F.asInstanceOf))    // this is sillyness, but it works (albeit at the cost of a confused compiler)
 }

@@ -15,8 +15,11 @@
  */
 
 package object skolems {
-  type ∀[F[_]] = Forall[F]
-  type ∃[F[_]] = Exists[F]
+  type ∀[+F[_]] = Forall[F]
+  val ∀ = Forall
+
+  type ∃[+F[_]] = Exists[F]
+  val ∃ = Exists
 
   type Tau
   type τ = Tau

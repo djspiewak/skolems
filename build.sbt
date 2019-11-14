@@ -21,3 +21,5 @@ ThisBuild / baseVersion := "0.1"
 ThisBuild / organization := "com.codecommit"
 ThisBuild / publishGithubUser := "djspiewak"
 ThisBuild / publishFullName := "Daniel Spiewak"
+
+scalacOptions -= "-Ywarn-dead-code"
