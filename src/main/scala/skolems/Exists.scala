@@ -19,6 +19,13 @@ package skolems
 trait Exists[+F[_]] {
   type A
   def apply(): F[A]
+
+  def raise[G[_], B](implicit ev: F[τ] <:< ((G[E] => B) forSome { type E })): ∀[G] => B = {
+    // this actually doesn't work if you write it as a type lambda (probably scalac bugs)
+    type L[α] = F[α] <:< ((G[E] => B) forSome { type E })
+
+    Exists.raise(Exists[λ[α => G[α] => B]](∀.of[L](ev)[A](apply())))
+  }
 }
 
 object Exists {
@@ -39,5 +46,24 @@ object Exists {
       }
   }
 
-  implicit def of[F[_], A](fa: F[A]): Exists[F] = apply[F](fa)
+  def raise[F[_], B](f: Exists[λ[α => F[α] => B]]): ∀[F] => B =
+    af => f()(af[f.A])
+
+  def lower[F[_], B](f: ∀[F] => B): Exists[λ[α => F[α] => B]] =
+    Exists[λ[α => F[α] => B]]((fa: F[τ]) => f(∀.of(fa)))
+
+  def lowerE[F[_], B](f: ∀[F] => B): (F[A] => B) forSome { type A } =
+    lower[F, B](f)()
+
+  implicit def of[F[_], A](implicit F: F[A]): Exists[F] = Exists[F](F)
+
+  // non-implicit parameter version designed to provide nicer syntax
+  implicit def ofDirect[F[_], A](F: F[A]): Exists[F] = of(F)
+
+  /**
+   * Utilities to implicitly materialize native `forSome` contexts.
+   */
+  object Implicits {
+    implicit def materialize[F[_]](implicit F: Exists[F]): F[A] forSome { type A } = F()
+  }
 }
