@@ -44,6 +44,13 @@ object Forall {
     }
   }
 
-  implicit def materialize[F[_]](implicit F: F[τ]): Forall[F] =
+  implicit def of[F[_]](implicit F: F[τ]): Forall[F] =
     Forall[F](_(F.asInstanceOf))    // this is sillyness, but it works (albeit at the cost of a confused compiler)
+
+  /**
+   * Utilities to implicitly materialize let-bound polymorphic contexts.
+   */
+  object Implicits {
+    implicit def lower[F[_], A](implicit F: Forall[F]): F[A] = F[A]
+  }
 }

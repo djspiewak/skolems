@@ -22,6 +22,12 @@ trait Exists[+F[_]] {
 }
 
 object Exists {
+
+  /**
+   * A forgetful constructor which packs a concrete value into an existential.
+   * This is mostly useful for explicitly assisting the compiler in sorting all
+   * of this out.
+   */
   def apply[F[_]]: PartiallyApplied[F] =
     new PartiallyApplied[F]
 
@@ -32,4 +38,6 @@ object Exists {
         def apply() = fa
       }
   }
+
+  implicit def of[F[_], A](fa: F[A]): Exists[F] = apply[F](fa)
 }
