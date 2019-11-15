@@ -19,13 +19,6 @@ package skolems
 trait Exists[+F[_]] {
   type A
   def apply(): F[A]
-
-  def raise[G[_], B](implicit ev: F[τ] <:< ((G[E] => B) forSome { type E })): ∀[G] => B = {
-    // this actually doesn't work if you write it as a type lambda (probably scalac bugs)
-    type L[α] = F[α] <:< ((G[E] => B) forSome { type E })
-
-    Exists.raise(Exists[λ[α => G[α] => B]](∀.of[L](ev)[A](apply())))
-  }
 }
 
 object Exists {
@@ -46,19 +39,31 @@ object Exists {
       }
   }
 
+  /**
+   * Tricksy overload for when you want everything to "just work(tm)".
+   * The implicit modifiers are to allow the compiler to materialize
+   * things through implicit search when relevant; don't be afraid to
+   * call this function explicitly.
+   */
+  implicit def apply[F[_], A](implicit fa: F[A]): Exists[F] =
+    apply[F](fa)
+
+  // non-implicit parameter version designed to provide nicer syntax
+  implicit def coerce[F[_], A](F: F[A]): Exists[F] = apply(F)
+
   def raise[F[_], B](f: Exists[λ[α => F[α] => B]]): ∀[F] => B =
     af => f()(af[f.A])
 
+  // This cast is required because Scala's type inference will not allow
+  // the parameter from the ∀ invocation (which is unreferenceable) to
+  // flow "outward" and form the constrained input type of the function.
+  // So because we don't have non-local inference in Scala, we need to
+  // play tricks with erasure and cast from F[Any].
   def lower[F[_], B](f: ∀[F] => B): Exists[λ[α => F[α] => B]] =
-    Exists[λ[α => F[α] => B]]((fa: F[τ]) => f(∀.of(fa)))
+    Exists[λ[α => F[α] => B]]((fa: F[Any]) => f(∀[F](fa.asInstanceOf)))
 
   def lowerE[F[_], B](f: ∀[F] => B): (F[A] => B) forSome { type A } =
     lower[F, B](f)()
-
-  implicit def of[F[_], A](implicit F: F[A]): Exists[F] = Exists[F](F)
-
-  // non-implicit parameter version designed to provide nicer syntax
-  implicit def ofDirect[F[_], A](F: F[A]): Exists[F] = of(F)
 
   /**
    * Utilities to implicitly materialize native `forSome` contexts.
