@@ -17,7 +17,7 @@ As a note, in most of the documentation I will be using the symbols ∀ ("for al
 libraryDependencies += "com.codecommit" %% "skolems" % "<version>"
 ```
 
-Published for Scala 2.13 and 2.12. This library does not have *any* upstream dependencies (though I would dearly love to add a Cats module at some point, since `Forall` and `Exists` both form useful classes).
+Published for Scala 2.13, 2.12, and 2.11. This library does not have *any* upstream dependencies (though I would dearly love to add a Cats module at some point, since `Forall` and `Exists` both form useful classes).
 
 ## API
 
