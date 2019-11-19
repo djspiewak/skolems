@@ -19,7 +19,7 @@ libraryDependencies += "com.codecommit" %% "skolems" % "<version>"
 
 Published for Scala 2.13 and 2.12. This library does not have *any* upstream dependencies (though I would dearly love to add a Cats module at some point, since `Forall` and `Exists` both form useful classes).
 
-### Vanilla Scala
+## API
 
 Just to conceptualize some of this, it's worth taking a moment to digress on the functionality available in this department with *vanilla* Scala 2.13 (note that Scala 3 improves on this in some important areas, and actually makes it worse in others). Also note that when I say "vanilla Scala", I actually mean "vanilla Scala with [kind-projector](https://github.com/typelevel/kind-projector)", since it's almost impossible to talk about any of this stuff *without* kind-projector.
 
@@ -179,7 +179,7 @@ foo(
 
 Basically, think of `Exists` as a "better `forSome`". It will type infer sanely and it's almost exactly as easy to use.
 
-#### Implicit Evidence
+### Implicit Evidence
 
 Another interesting use of higher-rank universal types is in defining polymorphic implicit values. As an example, [Cats](https://typelevel.org/cats) defines an instance of `Monad` for `Either[A, ?]`, for *any* type `A`. This is defined in the following way:
 
@@ -252,7 +252,7 @@ That works fine for a lot of cases, and we'll be making things even better soon!
 
 As an aside, the same implicit materialization *should* work for existentially-quantified implicit declarations just the same as it works for universally-quantified ones, but I haven't been able to come up with a good motivating example for this.
 
-#### Identities
+### Identities
 
 There are a number of identities which hold for rank-n quantification in first-order logic (which is to say, Scala's type system). These identities are very difficult to access and highly opaque when using let-bound polymorphism and `forSome`, but Skolems can make them very easy and direct. These identities are specifically as follows (with their corresponding implementation in the API):
 
