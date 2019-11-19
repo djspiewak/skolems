@@ -30,3 +30,11 @@ ThisBuild / scmInfo := Some(
     "git@github.com:djspiewak/skolems.git"))
 
 scalacOptions -= "-Ywarn-dead-code"
+
+mimaPreviousArtifacts := {
+  // just not going to make binary compatibility guarantees about 2.11
+  if (scalaVersion.value.startsWith("2.11"))
+    Set()
+  else
+    mimaPreviousArtifacts.value
+}
