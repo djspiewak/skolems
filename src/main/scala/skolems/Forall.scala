@@ -16,7 +16,14 @@
 
 package skolems
 
-trait Forall[+F[_]] { outer =>
+import scala.annotation.unchecked.uncheckedVariance
+
+private[skolems] sealed trait Parent {
+  private[skolems] type Apply[A]
+}
+
+trait Forall[+F[_]] extends Parent { outer =>
+  private[skolems] type Apply[A] = F[A] @uncheckedVariance
   def apply[A]: F[A]
 }
 
@@ -35,10 +42,17 @@ object Forall {
    *
    * The above will work.
    */
-  implicit def apply[F[_]](implicit ft: F[τ]): Forall[F] =
+  def apply[F[_]](ft: F[τ]): Forall[F] =
     new Forall[F] {
       def apply[A] = ft.asInstanceOf[F[A]]
     }
+
+  /**
+   * This is the implicit version of apply, but restructured and encoded
+   * such that the F is unconstrained in in arity or fixity.
+   */
+  implicit def materialize[T <: Parent](implicit ft: T#Apply[τ]): T =
+    apply(ft).asInstanceOf[T]
 
   def raise[F[_], B](f: Forall[λ[α => F[α] => B]]): ∃[F] => B =
     ef => f[ef.A](ef())
@@ -57,7 +71,10 @@ object Forall {
   /**
    * Utilities to implicitly materialize let-bound polymorphic contexts.
    */
-  object Implicits {
-    implicit def materialize[F[_], A](implicit F: Forall[F]): F[A] = F[A]
-  }
+  /*object Implicits {
+    implicit def materializeUnification[P <: Parent, A, E](
+        implicit P: P,
+        ev: P#Apply[E] <:< A): A =
+      ev(P.asInstanceOf[Forall[P.Apply]][E])
+  }*/
 }

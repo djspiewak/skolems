@@ -68,7 +68,7 @@ object Exists {
   /**
    * Utilities to implicitly materialize native `forSome` contexts.
    */
-  object Implicits {
+  /*object Implicits {
     implicit def materialize[F[_]](implicit F: Exists[F]): F[A] forSome { type A } = F()
-  }
+  }*/
 }
