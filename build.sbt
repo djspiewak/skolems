@@ -22,4 +22,11 @@ ThisBuild / organization := "com.codecommit"
 ThisBuild / publishGithubUser := "djspiewak"
 ThisBuild / publishFullName := "Daniel Spiewak"
 
+ThisBuild / homepage := Some(url("https://github.com/djspiewak/skolems"))
+
+ThisBuild / scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/djspiewak/skolems"),
+    "git@github.com:djspiewak/skolems.git"))
+
 scalacOptions -= "-Ywarn-dead-code"
