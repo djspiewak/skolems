@@ -266,3 +266,16 @@ There are a number of identities which hold for rank-n quantification in first-o
     * Also `Exists.lowerE` if the `forSome` quantifier encoding is more useful than the `Exists`-based version
 
 As a note on the naming convention, you should think of `raise` as "raise the rank". In other words, you're going from a rank-1 type (with the quantifier on the outside) to a rank-2 type (with the quantifier on the inside). Obviously, `lower` is the inverse. These functions are relatively trivial to define (except for `Exists.lower`, which requires an `asInstanceOf` due to the fact that Scala only has local type inference), but it's nice to have them already available.
+
+## Related Work
+
+The encodings in this project occurred in their (to my knowledge) original forms in Scalaz. The use of the inexpressible sentinel type as a mechanism for inferring a rank-2 universal from a Scala expression has varied origins. Miles Sabin mentioned the trick to me a few years ago and had some (now discarded) prototype constructs in Shapeless which took advantage of it. Ed Kmett has also discussed it as an encoding which infers better, though I cannot currently find a link to his use of it, and based on my memory of what he was doing, it may have been unsound all along. Scalaz's `Forall` has a peculiar `apply` function which uses a doubly-negated existential type (expressed using `forSome` and `A => Nothing`) to infer a rank-2 universal. This trick was *also* devised originally by Miles Sabin (waaaaaay back in the mists of time), and if you look very very closely, it's really just yet another way of expressing the "inexpressible sentinel type" idea. As for the idea of using an abstract type member within an object to encode the sentinel, I first learned of this from Kai, though Alex Konovalov also uses this extensively in several of his projects and I honestly don't know where it originates.
+
+Speaking of Alex, he has a really interesting library called [polymorphic](https://github.com/alexknvl/polymorphic) which may be a better use of your time than my failings here! Some differences between polymorphic and skolems:
+
+- His `Forall` and `Exists` are entirely unboxed
+- He provides a very clever `Instance` constructor for the common implicit case of existential pairs
+- He also provides `Pi` and `Sigma` for dependent type quantification
+- Polymorphic depends on cats-core, while Skolems has no dependencies (for better or worse)
+- Skolems defines a mechanism for materializing rank-n implicit values, while this is not provided by polymorphic in any form except `Instance`
+- The type inference seems to be nicer with polymorphic than with skolems
