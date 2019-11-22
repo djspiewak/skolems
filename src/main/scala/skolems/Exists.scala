@@ -39,6 +39,9 @@ object Exists {
       }
   }
 
+  def unapply[F[_]](ef: Exists[F]): Some[F[ef.A]] =
+    Some(ef())
+
   /**
    * Tricksy overload for when you want everything to "just work(tm)".
    * The implicit modifiers are to allow the compiler to materialize
