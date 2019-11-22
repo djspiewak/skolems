@@ -18,7 +18,7 @@ package skolems
 
 trait Exists[+F[_]] {
   type A
-  def apply(): F[A]
+  val value: F[A]
 }
 
 object Exists {
@@ -35,12 +35,12 @@ object Exists {
     def apply[A0](fa: F[A0]): Exists[F] =
       new Exists[F] {
         type A = A0
-        def apply() = fa
+        val value = fa
       }
   }
 
   def unapply[F[_]](ef: Exists[F]): Some[F[ef.A]] =
-    Some(ef())
+    Some(ef.value)
 
   /**
    * Tricksy overload for when you want everything to "just work(tm)".
@@ -55,7 +55,7 @@ object Exists {
   implicit def coerce[F[_], A](F: F[A]): Exists[F] = apply(F)
 
   def raise[F[_], B](f: Exists[λ[α => F[α] => B]]): ∀[F] => B =
-    af => f()(af[f.A])
+    af => f.value(af[f.A])
 
   // This cast is required because Scala's type inference will not allow
   // the parameter from the ∀ invocation (which is unreferenceable) to
@@ -66,7 +66,7 @@ object Exists {
     Exists[λ[α => F[α] => B]]((fa: F[Any]) => f(∀[F](fa.asInstanceOf)))
 
   def lowerE[F[_], B](f: ∀[F] => B): (F[A] => B) forSome { type A } =
-    lower[F, B](f)()
+    lower[F, B](f).value
 
   /**
    * Utilities to implicitly materialize native `forSome` contexts.

@@ -55,7 +55,7 @@ object Forall {
     apply(ft).asInstanceOf[T]
 
   def raise[F[_], B](f: Forall[λ[α => F[α] => B]]): ∃[F] => B =
-    ef => f[ef.A](ef())
+    ef => f[ef.A](ef.value)
 
   def lower[F[_], B](f: ∃[F] => B): Forall[λ[α => F[α] => B]] =
     Forall[λ[α => F[α] => B]](fa => f(∃[F](fa)))
