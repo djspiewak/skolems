@@ -39,7 +39,7 @@ object Exists {
       }
   }
 
-  def unapply[F[_]](ef: Exists[F]): Some[F[ef.A]] =
+  def unapply[F[_]](ef: Exists[F]): Some[F[A] forSome { type A }] =
     Some(ef.value)
 
   /**
