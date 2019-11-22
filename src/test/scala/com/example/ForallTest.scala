@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package object skolems {
-  type ∀[+F[_]] = Forall[F]
-  val ∀ = Forall
+package com.example
 
-  type ∃[+F[_]] = Exists[F]
-  val ∃ = Exists
+import skolems._
 
-  implicit def applyForall[F[_], E](implicit F: Forall[F]): F.Apply[E] = F[E]
+object ForallTest {
+  def foo[F[_, _]](implicit F: Forall[F[Int, *]]) = implicitly[F[Int, String]]
+  def bar[F[_, _]](implicit F: Forall[F[*, String]]) = implicitly[F[Int, String]]
 }
