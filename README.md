@@ -167,7 +167,7 @@ import skolems._
 
 def foo(unapplied: List[∃[λ[α => (α, α => String)]]]): List[String] =
   unapplied map { u =>
-    val (v, f) = u()
+    val (v, f) = u.value
     f(v)
   }
 
