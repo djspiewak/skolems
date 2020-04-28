@@ -18,7 +18,7 @@ package skolems
 
 import scala.annotation.unchecked.uncheckedVariance
 
-private[skolems] sealed trait Parent {
+private[skolems] sealed trait Parent extends Serializable {
   private[skolems] type Apply[A]
 }
 

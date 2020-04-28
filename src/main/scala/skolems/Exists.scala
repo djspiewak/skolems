@@ -16,7 +16,7 @@
 
 package skolems
 
-trait Exists[+F[_]] {
+trait Exists[+F[_]] extends Serializable {
   type A
   val value: F[A]
 }
